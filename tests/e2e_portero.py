@@ -69,7 +69,7 @@ try:
         ctx.add_init_script(f"if (!localStorage.getItem('svbi:'+location.pathname.replace(/[^/]*$/,'')+':svb.settings')) localStorage.setItem('svbi:'+location.pathname.replace(/[^/]*$/,'')+':svb.settings', JSON.stringify({json.dumps(SETTINGS)}))")
         errs = []
         pg = ctx.new_page(); pg.on('pageerror', lambda e: errs.append(str(e)))
-        pg.goto(WEB + '/index.html'); pg.wait_for_timeout(2500)
+        pg.goto(WEB + '/index.html?consola=1'); pg.wait_for_timeout(2500)
         pg.evaluate("askAdmin()"); pg.wait_for_timeout(200)
         for k in '1234': pg.locator(f'#adminKeys [data-k="{k}"]').click()
         pg.locator('#adminKeys [data-k="OK"]').click(); pg.wait_for_timeout(800)

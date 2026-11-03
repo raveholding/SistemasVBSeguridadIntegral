@@ -233,6 +233,7 @@ python3 tests/e2e_portero.py               # 21 pruebas: portero y avisos sin se
 python3 tests/e2e_accesos.py               # 22 pruebas: doble toque, personas, horario, huella (autenticador virtual), rostro, lector QR, móvil
 python3 tests/e2e_plataforma.py            # 31 pruebas: sector, escenas con PIN y voz, aforo en vivo, integraciones, tokens, patentes, geocercas, descubrimiento
 python3 tests/e2e_videoportero.py          # 16 pruebas: video portero (cara del visitante en vivo), teclado de PC, almacenamiento separado
+python3 tests/e2e_frente.py                # 35 pruebas: frente del portero (timbre, PIN táctil y de PC, pase, emergencia, consola, fuera de horario, celular)
 python3 tests/e2e_instalacion.py           # 28 pruebas: asistente de instalación, alta ONVIF, equipos y cámaras, grilla, PTZ, periféricos, perfiles de pantalla
 node tools/embed.js --check                # index.html sincronizado con firmware y QR
 ```

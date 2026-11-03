@@ -20,6 +20,7 @@ function readConfig(env = process.env) {
     port: int('PORT', 8080),
     host: env.HOST || '0.0.0.0',
     businessName: env.BUSINESS_NAME || 'Mi Negocio',
+    wizardAuto: env.WIZARD_AUTO !== '0', // 0 = instalaciones ya hechas: el asistente no se abre solo (sigue disponible a mano)
     panelUser: env.PANEL_USER || '',
     panelPass: env.PANEL_PASS || '',
     adminPin: env.ADMIN_PIN || '1234',

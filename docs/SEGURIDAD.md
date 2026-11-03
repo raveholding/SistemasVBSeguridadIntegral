@@ -1,6 +1,6 @@
 # Sistemas VB Seguridad Integral — Revisión de seguridad
 
-Versión 2.2.0 · 3/11/2026
+Versión 2.3.0 · 3/11/2026
 
 ## Contra qué se protege
 
