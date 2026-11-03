@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Sistemas VB Seguridad Integral">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#9A9A9A"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="#000"/>
+  <path d="M256 58 102 116v118c0 108 66 188 154 222 88-34 154-114 154-222V116z" fill="#0A0A0A" stroke="url(#g)" stroke-width="18" stroke-linejoin="round"/>
+  <path d="M256 104 146 146v88c0 82 48 146 110 174 62-28 110-92 110-174v-88z" fill="none" stroke="#333" stroke-width="4"/>
+  <text x="256" y="300" text-anchor="middle" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-size="150" font-weight="800" letter-spacing="-6" fill="url(#g)">VB</text>
+  <text x="256" y="356" text-anchor="middle" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-size="25" font-weight="600" letter-spacing="5" fill="#E0E0E0">SEGURIDAD</text>
+</svg>
