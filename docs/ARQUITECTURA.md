@@ -1,7 +1,7 @@
 # Sistemas VB Seguridad Integral — Arquitectura técnica
 
 **Sistema de Seguridad Integral Unificado** para comercios, industrias y empresas, campos y fincas, y hogares.
-Versión 2.2 · Producto genérico (sin datos de clientes).
+Versión 2.3 · Producto genérico (sin datos de clientes).
 
 Desarrollado por **Vincular Business · Sistema VB** — WhatsApp (387) 4484132 · vincularbusiness@gmail.com
 
