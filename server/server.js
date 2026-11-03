@@ -28,7 +28,7 @@ const { rtspUrl, redact, DEFAULT_RTSP_TEMPLATE } = require('./lib/dahua');
 const { discover, candidateHosts, portOpen } = require('./lib/discover');
 const { DahuaEvents } = require('./lib/dahua-events');
 const { digestGet, parseKV } = require('./lib/dahua');
-const { NtfyListener, publish, REPLIES } = require('./lib/doorbell');
+const { NtfyListener, publish, REPLIES, fetchVisitorPhoto } = require('./lib/doorbell');
 const SCHEMA = require('./lib/settings-schema');
 const { parseRecipients, sendWhatsApp, sendPush } = require('./lib/notifiers');
 const { AccessStore, BIO_ROLES } = require('./lib/access');
@@ -41,7 +41,7 @@ const { AnalyticsEngine, fromDahua, fromFrigate, fromApi } = require('./lib/anal
 const { DeviceStore } = require('./lib/devices');
 const { OnvifDevice, ptzVector } = require('./lib/onvif-client');
 
-const VERSION = '2.1.0';
+const VERSION = '2.2.0';
 const PRODUCT = 'Sistemas VB Seguridad Integral';
 const DEVELOPER = { name: 'Vincular Business · Sistema VB', whatsapp: '+54 9 387 448-4132', email: 'vincularbusiness@gmail.com', web: 'https://wa.me/5493874484132' };
 
@@ -277,7 +277,7 @@ function createApp(cfg, opts = {}) {
     bell.on('ring', (r) => onRing({ ...r, source: 'qr' }));
     bell.start();
   }
-  async function onRing({ id, name, msg, source, force }) {
+  async function onRing({ id, name, msg, source, force, video }) {
     const now = Date.now();
     if (!force && !access.isOpen()) {
       // Fuera de horario: el cliente ve el horario en su celular y no suena el panel.
@@ -294,12 +294,15 @@ function createApp(cfg, opts = {}) {
     lastRing = now;
     id = id || crypto.randomBytes(6).toString('hex');
     const ring = { id, ts: new Date().toISOString(), name, msg, source, answered: null };
+    // Video portero: el panel recibe la señalización WebRTC por un tema propio de este timbre (no expone el tema principal)
+    if (video && source === 'qr' && /^[\w-]{4,40}$/.test(id)) { ring.video = true; ring.rtc = { base: cfg.doorbell.ntfy, sig: `${cfg.doorbell.topic}-v${id}` }; }
     rings.set(id, ring);
     if (rings.size > 50) rings.delete(rings.keys().next().value);
     addEvent({ type: 'DOORBELL_QR', message: `Timbre desde ${source === 'qr' ? 'el celular del cliente' : source}${name ? ': ' + name : ''}${msg ? ' — ' + msg : ''}` });
     broadcast('ring', ring);
     let photo = null;
-    try { photo = await snapshot(cfg.doorbell.camera, true); } catch { /* sin cámara */ }
+    if (ring.video) photo = await fetchVisitorPhoto(cfg.doorbell.ntfy, ring.rtc.sig, id).catch(() => null); // cara del visitante
+    if (!photo) { try { photo = await snapshot(cfg.doorbell.camera, true); } catch { /* sin cámara */ } }
     const kb = { inline_keyboard: [[{ text: '🙂 Ya voy', callback_data: `r:${id}:voy` }, { text: '⏳ Un momento', callback_data: `r:${id}:momento` }], [{ text: '📦 Dejar en la puerta', callback_data: `r:${id}:deje` }, { text: '🚫 No atendemos', callback_data: `r:${id}:cerrado` }], [{ text: '🔓 Abrir puerta', callback_data: `r:${id}:pase` }]] };
     await alertAll(`🔔 Tocan el timbre en ${cfg.businessName}${name ? `\n👤 ${name}` : ''}${msg ? `\n💬 ${msg}` : ''}\nRespondé con los botones:`, photo, { kind: 'ring', kb, ringId: id });
     return { ok: true, id };
@@ -840,11 +843,22 @@ function createApp(cfg, opts = {}) {
   };
   function clientIp(req) { return (req.socket.remoteAddress || '').replace('::ffff:', ''); }
   function lockStatus(ip) {
+    if (globalLocked()) return Math.ceil((globalUntil - Date.now()) / 1000);
     const f = state.failures.get(ip);
     if (f && f.until > Date.now()) return Math.ceil((f.until - Date.now()) / 1000);
     return 0;
   }
+  // Bloqueo global: muchos intentos fallidos desde distintas IPs (ataque distribuido en la red local)
+  const globalFails = []; let globalUntil = 0; let globalAlerted = 0;
+  function globalLocked() { return globalUntil > Date.now(); }
   function registerFailure(ip) {
+    const now = Date.now();
+    globalFails.push(now); while (globalFails.length && now - globalFails[0] > 600000) globalFails.shift();
+    if (globalFails.length >= 30 && !globalLocked()) {
+      globalUntil = now + 300000;
+      addEvent({ type: 'GLOBAL_LOCKOUT', level: 'CRITICAL', message: `${globalFails.length} intentos fallidos en 10 minutos desde la red: accesos por PIN bloqueados 5 minutos` });
+      if (now - globalAlerted > 600000) { globalAlerted = now; alertAll(`🚨 ${cfg.businessName}: posible ataque — ${globalFails.length} intentos de PIN fallidos en 10 minutos. Accesos por PIN bloqueados 5 minutos.`, null, { kind: 'alarm' }); }
+    }
     const f = state.failures.get(ip) || { count: 0, until: 0 };
     f.count++;
     if (f.count >= 5) { f.until = Date.now() + 60000; f.count = 0; }
@@ -855,10 +869,54 @@ function createApp(cfg, opts = {}) {
     if (!cfg.panelUser || !cfg.panelPass) return true;
     const h = req.headers.authorization || '';
     if (!h.startsWith('Basic ')) return false;
+    const ip = clientIp(req);
+    if (lockStatus(ip)) return false;
     const [u, ...rest] = Buffer.from(h.slice(6), 'base64').toString().split(':');
-    return safeEq(u, cfg.panelUser) && safeEq(rest.join(':'), cfg.panelPass);
+    const ok = safeEq(u, cfg.panelUser) && safeEq(rest.join(':'), cfg.panelPass);
+    if (!ok) { registerFailure(ip); addEvent({ type: 'PANEL_AUTH_FAIL', level: 'WARN', message: 'Usuario o contraseña del panel incorrectos', ip }); }
+    return ok;
   }
-  const isAdmin = (req) => safeEq(req.headers['x-admin-pin'] || '', cfg.adminPin);
+  // PIN de administración: cada intento fallido cuenta para el bloqueo (antes solo lo hacía /api/admin/check)
+  const adminCache = new WeakMap();
+  function isAdmin(req) {
+    if (adminCache.has(req)) return adminCache.get(req);
+    const pin = String(req.headers['x-admin-pin'] || '');
+    let ok = false;
+    if (pin) {
+      const ip = clientIp(req);
+      if (!lockStatus(ip)) {
+        ok = safeEq(pin, cfg.adminPin);
+        if (!ok) { registerFailure(ip); addEvent({ type: 'ADMIN_DENIED', level: 'WARN', message: 'PIN de administración incorrecto', ip }); }
+      }
+    }
+    adminCache.set(req, ok);
+    return ok;
+  }
+  // Límite de pedidos por IP para rutas sin PIN que generan avisos o escriben en la auditoría
+  const rate = new Map();
+  function rateLimited(ip, key, max = 20, windowMs = 60000) {
+    const k = `${key}:${ip}`; const now = Date.now();
+    const arr = (rate.get(k) || []).filter((t) => now - t < windowMs);
+    arr.push(now); rate.set(k, arr);
+    if (rate.size > 5000) rate.clear();
+    return arr.length > max;
+  }
+  // Anti DNS-rebinding: solo se atiende si el Host es una IP, localhost, un nombre local o uno permitido
+  const allowedHosts = (process.env.ALLOWED_HOSTS || '').split(',').map((x) => x.trim().toLowerCase()).filter(Boolean);
+  function hostAllowed(req) {
+    const h = String(req.headers.host || '').toLowerCase().replace(/:\d+$/, '').replace(/^\[|\]$/g, '');
+    if (!h) return true;
+    if (h === 'localhost' || /^\d{1,3}(\.\d{1,3}){3}$/.test(h) || h.includes(':')) return true; // IPv4 / IPv6
+    if (/^[a-z0-9-]+$/.test(h) || /\.(local|lan|home|internal|ts\.net)$/.test(h)) return true; // nombre de la PC, mDNS, Tailscale
+    return allowedHosts.some((a) => h === a || h.endsWith('.' + a));
+  }
+  // Anti CSRF: un sitio web abierto en el mismo equipo no puede mandar órdenes al servidor
+  function originAllowed(req) {
+    const o = req.headers.origin;
+    if (!o || o === 'null') return !o; // sin Origin = app, curl o integración; "null" = sandbox / archivo
+    try { return new URL(o).host.toLowerCase() === String(req.headers.host || '').toLowerCase(); } catch { return false; }
+  }
+  const SEC_HEADERS = { 'X-Frame-Options': 'DENY', 'Content-Security-Policy': "frame-ancestors 'none'; object-src 'none'; base-uri 'self'", 'Referrer-Policy': 'no-referrer', 'X-Content-Type-Options': 'nosniff', 'Cross-Origin-Opener-Policy': 'same-origin' };
 
   // ───────────── HTTP ─────────────
   function send(res, status, body, headers = {}) {
@@ -1181,7 +1239,7 @@ function createApp(cfg, opts = {}) {
         done: !!devices.wizard.done, at: devices.wizard.at || null,
         checks: {
           negocio: cfg.businessName !== 'Mi Negocio', pins: cfg.doorPin !== '2580' && cfg.duressPin !== '9999' && cfg.adminPin !== '1234',
-          camaras: camerasConfigured(), cerradura: !!cfg.esp32Url, avisos: !!((cfg.telegram.token && cfg.telegram.chatId) || cfg.whatsapp.to || (cfg.push.enabled && cfg.push.topic)),
+          camaras: camerasConfigured(), cerradura: !!cfg.esp32Url, panelAuth: !!(cfg.panelUser && cfg.panelPass), avisos: !!((cfg.telegram.token && cfg.telegram.chatId) || cfg.whatsapp.to || (cfg.push.enabled && cfg.push.topic)),
         },
         sector: cfg.sector, business: cfg.businessName, cameraCount: camerasConfigured() ? streamNames().length : 0,
       });
@@ -1418,9 +1476,8 @@ function createApp(cfg, opts = {}) {
       const lock = lockStatus(ip);
       if (lock) return send(res, 429, { ok: false, retryIn: lock });
       if (isAdmin(req)) { state.failures.delete(ip); return send(res, 200, { ok: true }); }
-      registerFailure(ip);
-      addEvent({ type: 'ADMIN_DENIED', level: 'WARN', message: 'PIN de administrador incorrecto', ip });
-      return send(res, 403, { ok: false });
+      const locked = lockStatus(ip); // isAdmin ya registró el intento fallido
+      return send(res, locked ? 429 : 403, { ok: false, ...(locked ? { retryIn: locked } : {}) });
     }
 
     if (pathname === '/api/events' && m === 'GET') {
@@ -1428,6 +1485,7 @@ function createApp(cfg, opts = {}) {
       return send(res, 200, readEvents(Math.min(5000, parseInt(query.get('limit'), 10) || 200)));
     }
     if (pathname === '/api/events' && m === 'POST') {
+      if (rateLimited(ip, 'events', 60)) return send(res, 429, { error: 'Demasiados pedidos' });
       const b = await readBody(req);
       const type = String(b.type || 'EVENT').replace(/[^A-Z0-9_]/gi, '').slice(0, 40);
       const e = addEvent({ type, level: String(b.level || 'INFO').slice(0, 10), message: String(b.message || '').slice(0, 500), source: 'panel' });
@@ -1435,6 +1493,7 @@ function createApp(cfg, opts = {}) {
     }
 
     if (pathname === '/api/alert' && m === 'POST') {
+      if (rateLimited(ip, 'alert', 12)) return send(res, 429, { error: 'Demasiados avisos seguidos' });
       const b = await readBody(req);
       const type = String(b.type || 'ALERT').replace(/[^A-Z0-9_]/gi, '').slice(0, 40);
       let photo = null;
@@ -1519,6 +1578,7 @@ function createApp(cfg, opts = {}) {
       return send(res, 200, await onRing({ name: 'Prueba', msg: 'Timbre de prueba desde administración', source: 'prueba', force: true }));
     }
     if (pathname === '/api/doorbell/reply' && m === 'POST') {
+      if (rateLimited(ip, 'reply', 20)) return send(res, 429, { error: 'Demasiados pedidos' });
       const b = await readBody(req);
       const code = String(b.code || '');
       if (code === 'pase') {
@@ -1789,6 +1849,12 @@ function createApp(cfg, opts = {}) {
 
   const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, 'http://x');
+    Object.entries(SEC_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
+    if (!hostAllowed(req)) return send(res, 421, 'Dirección no permitida (agregala en ALLOWED_HOSTS)');
+    if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method) && !originAllowed(req)) {
+      addEvent({ type: 'CSRF_BLOCKED', level: 'WARN', message: `Pedido bloqueado desde otro sitio (${String(req.headers.origin).slice(0, 80)} → ${url.pathname})`, ip: clientIp(req) });
+      return send(res, 403, { error: 'Origen no permitido' });
+    }
     const v1Token = url.pathname.startsWith('/api/v1/') && !!platform.verifyToken(bearer(req, url.searchParams));
     if (!v1Token && !checkPanelAuth(req)) return send(res, 401, 'Autenticación requerida', { 'WWW-Authenticate': 'Basic realm="Sistemas VB Seguridad Integral"' });
     try {
@@ -1804,7 +1870,7 @@ function createApp(cfg, opts = {}) {
   // WebSocket (video WebRTC/MSE) → go2rtc
   server.on('upgrade', (req, socket, head) => {
     const url = new URL(req.url, 'http://x');
-    if (!checkPanelAuth(req) || url.pathname !== '/go2rtc/api/ws') { socket.destroy(); return; }
+    if (!hostAllowed(req) || (req.headers.origin && !originAllowed(req)) || !checkPanelAuth(req) || url.pathname !== '/go2rtc/api/ws') { socket.destroy(); return; }
     const [h, p] = cfg.go2rtc.api.split(':');
     const up = net.connect(+p, h, () => {
       const headers = Object.entries(req.headers).filter(([k]) => k !== 'authorization').map(([k, v]) => `${k}: ${k === 'host' ? cfg.go2rtc.api : v}`);

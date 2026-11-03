@@ -2,8 +2,10 @@
 
 **Sistemas VB Seguridad Integral — sistema de seguridad integral unificado de Vincular Business** para comercios, industrias y empresas, campos y fincas, y hogares. Panel táctil (web, celular y Windows) con cámaras en vivo de cualquier marca, control de cerradura y portón, PIN de coacción, SOS 911, asistente de voz, pases QR/NFC, huella y rostro, analítica de video unificada (patentes, EPP, caídas, merodeo, aglomeraciones, filtro de fauna y clima), aforo, geocercas, escenas del hogar, red de alerta vecinal, API REST, MQTT/Home Assistant (Alexa, Google, Siri) y avisos con foto al celular de los dueños.
 
-![Panel](https://img.shields.io/badge/panel-HTML5%20%7C%20PWA%20%7C%20Electron-000?style=flat-square) ![Cámaras](https://img.shields.io/badge/c%C3%A1maras-Dahua%20%7C%20Hikvision%20%7C%20ONVIF%20%7C%20RTSP-000?style=flat-square) ![Integraciones](https://img.shields.io/badge/integra-API%20v1%20%7C%20MQTT%20%7C%20Home%20Assistant%20%7C%20Webhooks-000?style=flat-square) ![Pruebas](https://img.shields.io/badge/pruebas-216%20OK-000?style=flat-square)
+![Panel](https://img.shields.io/badge/panel-HTML5%20%7C%20PWA%20%7C%20Electron-000?style=flat-square) ![Cámaras](https://img.shields.io/badge/c%C3%A1maras-Dahua%20%7C%20Hikvision%20%7C%20ONVIF%20%7C%20RTSP-000?style=flat-square) ![Integraciones](https://img.shields.io/badge/integra-API%20v1%20%7C%20MQTT%20%7C%20Home%20Assistant%20%7C%20Webhooks-000?style=flat-square) ![Pruebas](https://img.shields.io/badge/pruebas-240%20OK-000?style=flat-square)
 
+> **Revisión de seguridad:** [`docs/SEGURIDAD.md`](docs/SEGURIDAD.md)
+>
 > **Arquitectura técnica completa** (capas, stack, diagramas de flujo, endpoints y estructuras de datos): [`docs/ARQUITECTURA.md`](docs/ARQUITECTURA.md)
 
 > **Producto genérico:** este repositorio no tiene datos de ningún cliente. Nombre, logo, cámaras, PINs, horarios y avisos se cargan en la instalación con el **asistente** (se abre solo la primera vez que se entra a ⚙ Administración) o desde el Centro de configuración.
@@ -224,13 +226,14 @@ sudo cp docs/svb-seguridad.service /etc/systemd/system/ && sudo systemctl enable
 ## Pruebas
 
 ```bash
-cd server && npm run setup && npm test     # 28 pruebas: inventario multi-marca con ONVIF simulado (alta, canales, PTZ, cifrado, asistente), plataforma v2 (cifrado, ONVIF, analítica, API v1, MQTT/Home Assistant, webhooks, vigilante de video, coacción invisible), personas, horario, huella (passkeys), rostro, reintento de avisos, configuración total, vinculación ESP32, WhatsApp/push, portero QR/NFC, Digest, autodescubrimiento, API, coacción, eventos push, armado, PTZ, grabaciones, configuración, video real
+cd server && npm run setup && npm test     # 34 pruebas: seguridad (fuerza bruta, CSRF, DNS rebinding, bloqueo global), inventario multi-marca con ONVIF simulado (alta, canales, PTZ, cifrado, asistente), plataforma v2 (cifrado, ONVIF, analítica, API v1, MQTT/Home Assistant, webhooks, vigilante de video, coacción invisible), personas, horario, huella (passkeys), rostro, reintento de avisos, configuración total, vinculación ESP32, WhatsApp/push, portero QR/NFC, Digest, autodescubrimiento, API, coacción, eventos push, armado, PTZ, grabaciones, configuración, video real
 python3 tests/qr.test.py                   # QR legible en versiones 1–10
 python3 tests/e2e.py                       # 88 pruebas de punta a punta con navegador real
 python3 tests/e2e_portero.py               # 21 pruebas: portero y avisos sin servidor (timbre del cliente, push con foto y botones, WhatsApp, horario, SOS)
 python3 tests/e2e_accesos.py               # 22 pruebas: doble toque, personas, horario, huella (autenticador virtual), rostro, lector QR, móvil
 python3 tests/e2e_plataforma.py            # 31 pruebas: sector, escenas con PIN y voz, aforo en vivo, integraciones, tokens, patentes, geocercas, descubrimiento
-python3 tests/e2e_instalacion.py           # 26 pruebas: asistente de instalación, alta ONVIF, equipos y cámaras, grilla, PTZ, periféricos, perfiles de pantalla
+python3 tests/e2e_videoportero.py          # 16 pruebas: video portero (cara del visitante en vivo), teclado de PC, almacenamiento separado
+python3 tests/e2e_instalacion.py           # 28 pruebas: asistente de instalación, alta ONVIF, equipos y cámaras, grilla, PTZ, periféricos, perfiles de pantalla
 node tools/embed.js --check                # index.html sincronizado con firmware y QR
 ```
 

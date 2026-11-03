@@ -1,6 +1,6 @@
 # Sistemas VB Seguridad Integral — Lista para salir al mercado
 
-Estado al 3/11/2026 · versión 2.1.0
+Estado al 3/11/2026 · versión 2.2.0
 
 ## Listo en esta versión
 
@@ -10,7 +10,10 @@ Estado al 3/11/2026 · versión 2.1.0
 - [x] **Asistente de instalación** de 6 pasos al primer ingreso (obliga a cambiar los PINs de fábrica).
 - [x] **Pantalla que se adapta al dispositivo**: tablet de pared, celular, PC y monitor de cámaras.
 - [x] **Periféricos detectados**: cámaras, micrófonos, parlante, USB serie, NFC, huella, voz, pantalla táctil, lector QR.
-- [x] 216 pruebas automáticas (28 del servidor + 188 en navegador).
+- [x] **Video portero:** el visitante llama desde su celular y el panel lo ve en vivo, con foto de respaldo en el aviso y opción de hablarle.
+- [x] Teclado de PC en todos los PINs (incluido el numérico).
+- [x] Revisión de seguridad con 11 correcciones (ver `docs/SEGURIDAD.md`).
+- [x] 240 pruebas automáticas (34 del servidor + 206 en navegador).
 
 ## Falta para el lanzamiento comercial
 
@@ -18,6 +21,7 @@ Estado al 3/11/2026 · versión 2.1.0
 |---|---|---|
 | 1 | **Acceso remoto simple** (relé o túnel de Vincular; el dueño escanea un QR) | Hoy se usa Tailscale; para el público general tiene que ser tan simple como DMSS con el número de serie. |
 | 1 | **Servidor ntfy propio** de Vincular | ntfy.sh público no garantiza el servicio para muchos clientes. |
+| 1 | **Seguridad P1** (ver `docs/SEGURIDAD.md`): cerradura con desafío-respuesta, un dominio por cliente, PINs de respaldo con hash | Lo más grave de lo pendiente. |
 | 1 | **Pruebas de campo** con equipos reales: XVR y cámara IP Dahua, NVR Hikvision, cámara ONVIF genérica; 7 días seguidos con cortes provocados de WiFi, internet y luz | Validar ONVIF y RTSP reales, estabilidad y reconexión. |
 | 2 | Porteros con video Dahua (VTO): timbre, atender, abrir | Completar la compatibilidad que ofrece DMSS. |
 | 2 | Eventos de Hikvision (ISAPI alertStream) | Hoy Hikvision entra con video y PTZ, sin eventos inteligentes. |
@@ -31,7 +35,7 @@ Estado al 3/11/2026 · versión 2.1.0
 
 ```bash
 cd server && npm run setup && npm test
-python3 tests/e2e.py && python3 tests/e2e_plataforma.py && python3 tests/e2e_instalacion.py
+python3 tests/e2e.py && python3 tests/e2e_plataforma.py && python3 tests/e2e_instalacion.py && python3 tests/e2e_videoportero.py
 python3 tests/e2e_portero.py && python3 tests/e2e_accesos.py && python3 tests/qr.test.py
 ```
 

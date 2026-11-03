@@ -1,7 +1,7 @@
 # Sistemas VB Seguridad Integral — Arquitectura técnica
 
 **Sistema de Seguridad Integral Unificado** para comercios, industrias y empresas, campos y fincas, y hogares.
-Versión 2.1 · Producto genérico (sin datos de clientes).
+Versión 2.2 · Producto genérico (sin datos de clientes).
 
 Desarrollado por **Vincular Business · Sistema VB** — WhatsApp (387) 4484132 · vincularbusiness@gmail.com
 
@@ -179,6 +179,10 @@ flowchart LR
 | Se corta internet | Avisos críticos (timbre, SOS, coacción, alarmas) en cola de reintento 15 minutos. |
 
 ---
+
+### 2.4 Video portero ✅
+
+El visitante escanea el QR, toca **Llamar** y su celular transmite la cámara frontal al panel por **WebRTC** (P2P, cifrado DTLS-SRTP, STUN públicos). La señalización (oferta/respuesta SDP comprimidas con deflate y partidas en mensajes de 3 KB) y una **foto JPEG de respaldo** viajan por el tema propio de la llamada `<tema>-v<id>` del relevo ntfy. El panel muestra la foto al instante y el video en vivo cuando conecta; **Hablar y escuchar** habilita el micrófono del panel. Con servidor, el aviso a los dueños (push, WhatsApp, Telegram) lleva la cara del visitante; si no llega en 6 s, la foto de la cámara de la puerta. Sin cámara o sin permiso, funciona como timbre común.
 
 ## 3. Inteligencia artificial y analítica de video
 
@@ -526,7 +530,7 @@ SECRETS_ENCRYPT=1            # cifrado AES-256-GCM en disco
 ### Pruebas
 
 ```bash
-cd server && npm test           # 28 pruebas: incluye bóveda, ONVIF, analítica, API v1, MQTT con broker simulado,
+cd server && npm test           # 34 pruebas: incluye bóveda, ONVIF, analítica, API v1, MQTT con broker simulado,
                                 # webhooks firmados, vigilante de video y que la coacción no llegue a la pantalla
 python3 tests/e2e.py            # 88 pruebas con navegador real y grabador Dahua simulado
 python3 tests/e2e_plataforma.py # 31 pruebas de la plataforma multi-sector en navegador

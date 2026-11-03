@@ -51,6 +51,10 @@ try:
         pg.locator('#wizNext').click(); pg.wait_for_timeout(500)
         check('exige cambiar los PINs de fábrica', 'cambiá los PINs' in pg.locator('#wzOut').inner_text())
         pg.fill('#wzDoor', '4826'); pg.fill('#wzDuress', '7391'); pg.fill('#wzAdmin', '5150')
+        check('contraseña del panel marcada por defecto', pg.locator('#wzPanelOn').is_checked())
+        pg.locator('#wizNext').click(); pg.wait_for_timeout(800)
+        check('exige completar la contraseña del panel o desmarcar', 'Completá usuario' in pg.locator('#wzOut').inner_text())
+        pg.locator('#wzPanelOn').uncheck()  # en la prueba el navegador automatizado no puede responder el pedido de contraseña
         pg.locator('#wizNext').click(); pg.wait_for_timeout(1200)
         check('PINs nuevos guardados', 'DOOR_PIN=4826' in open(os.path.join(tmp, '.env')).read())
         # Cámaras: agregar el grabador ONVIF a mano (en la prueba no hay multicast)

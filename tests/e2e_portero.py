@@ -66,7 +66,7 @@ try:
     with sync_playwright() as p:
         b = p.chromium.launch(args=['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'])
         ctx = b.new_context(viewport={'width': 1366, 'height': 820}, permissions=['camera', 'microphone'])
-        ctx.add_init_script(f"if (!localStorage.getItem('svb.settings')) localStorage.setItem('svb.settings', JSON.stringify({json.dumps(SETTINGS)}))")
+        ctx.add_init_script(f"if (!localStorage.getItem('svbi:'+location.pathname.replace(/[^/]*$/,'')+':svb.settings')) localStorage.setItem('svbi:'+location.pathname.replace(/[^/]*$/,'')+':svb.settings', JSON.stringify({json.dumps(SETTINGS)}))")
         errs = []
         pg = ctx.new_page(); pg.on('pageerror', lambda e: errs.append(str(e)))
         pg.goto(WEB + '/index.html'); pg.wait_for_timeout(2500)

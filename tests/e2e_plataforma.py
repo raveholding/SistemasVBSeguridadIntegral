@@ -78,7 +78,7 @@ try:
         check('escenas se ocultan en comercio', not pg.locator('#sceneActs').is_visible())
         pg.locator('#adminNav [data-go="integra"]').click(); pg.wait_for_timeout(1500)
         box = pg.locator('#integraBox').inner_text()
-        check('estado de componentes', 'Estado del sistema' in box and 'Sistemas VB Seguridad Integral v2.1.0' in box, box[:300])
+        check('estado de componentes', 'Estado del sistema' in box and 'Sistemas VB Seguridad Integral v2.2.0' in box, box[:300])
         check('aforo en la sección', pg.locator('#igOcc').inner_text().startswith('5'))
         pg.locator('[data-ig="occ-"]').click(); pg.wait_for_timeout(600)
         check('−1 sale actualiza', pg.locator('#igOcc').inner_text().startswith('4') and pg.locator('#stOcc span').inner_text() == '4/5')
@@ -99,7 +99,7 @@ try:
         pg.screenshot(path=SHOTS + '/v2-02-integraciones.png', full_page=True)
         pg.locator('#adminNav [data-go="soporte"]').click(); pg.wait_for_timeout(300)
         sup = pg.locator('[data-pane="soporte"]').inner_text()
-        check('soporte con datos del desarrollador', 'vincularbusiness@gmail.com' in sup and '(387) 4484132' in sup and 'Sistemas VB Seguridad Integral v2.1' in sup)
+        check('soporte con datos del desarrollador', 'vincularbusiness@gmail.com' in sup and '(387) 4484132' in sup and 'Sistemas VB Seguridad Integral v2.2' in sup)
         check('sin instrucciones internas del desarrollador en pantalla', 'Settings → Pages' not in pg.content() and 'GitHub Pages' not in pg.locator('#adminOv').inner_text())
         # Vista celular
         m = b.new_context(viewport={'width': 390, 'height': 844}, is_mobile=True, has_touch=True)
