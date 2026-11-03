@@ -143,6 +143,14 @@ sequenceDiagram
 - **Perfil de pantalla automático** según el dispositivo: puntero táctil + pantalla chica = **celular**; táctil = **tablet de pared / tótem**; mouse = **PC de administración**; `?pantalla=monitor` = **monitor de cámaras** (solo grilla, para televisores fijos). Se puede forzar en Admin → Sistema.
 - **Periféricos detectados** en el equipo del panel: cámaras, micrófonos, parlante, USB serie (cerradura por cable), NFC, huella/passkeys, reconocimiento de voz, pantalla táctil y lector QR USB/Bluetooth (se reconoce por la velocidad de tipeo).
 
+### 2.1 quater Frente del portero (pantalla de inicio) ✅
+
+- **Inicio táctil** pensado para tablets de pared, tótems, celulares y PC: logo y nombre del negocio, estado (Habilitado / Fuera de horario), reloj, y los accesos en botones grandes: **Tocar timbre** (o *Llamar a oficina*), **Ingresar con PIN**, **Tengo un pase**, **Tarjeta NFC**, **Asistente de voz**, **Personal autorizado** (rostro/huella, solo si están activados) y **Emergencia** (más *Llamar a un contacto de confianza* si hay uno cargado). Al pie, los datos del desarrollador (WhatsApp y email).
+- **PIN**: ventana propia con teclado táctil; en PC alcanza con tipear los números (Enter envía, Backspace borra, Esc cierra). Se cierra sola a los 25 s sin uso para no dejar un PIN escrito a medias en una pantalla pública.
+- **Consola**: el botón de cuadrícula del inicio abre la consola (puerta con cámara, teclado lateral, cámaras multicanal, eventos); el botón de casa vuelve. En la tablet de pared vuelve sola a los 2 minutos sin tocar. `?consola=1` arranca en la consola y `?pantalla=monitor` (televisor de cámaras) no muestra el inicio.
+- **Marca**: colores del sistema (negro, plata y blanco), logo y nombre del cliente; la frase y la dirección que se muestran se cargan en Administración → Marca y perfil. La insignia indica si hay cámaras («Videovigilancia activa») o no («Sin cámaras · tu privacidad primero»).
+- Prueba: `tests/e2e_frente.py` (35 comprobaciones).
+
 ### 2.2 Pipeline de streaming ✅
 
 ```mermaid

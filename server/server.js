@@ -41,7 +41,7 @@ const { AnalyticsEngine, fromDahua, fromFrigate, fromApi } = require('./lib/anal
 const { DeviceStore } = require('./lib/devices');
 const { OnvifDevice, ptzVector } = require('./lib/onvif-client');
 
-const VERSION = '2.2.0';
+const VERSION = '2.3.0';
 const PRODUCT = 'Sistemas VB Seguridad Integral';
 const DEVELOPER = { name: 'Vincular Business · Sistema VB', whatsapp: '+54 9 387 448-4132', email: 'vincularbusiness@gmail.com', web: 'https://wa.me/5493874484132' };
 

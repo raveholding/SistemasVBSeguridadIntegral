@@ -30,7 +30,7 @@ with sync_playwright() as p:
     cdp = ctx.new_cdp_session(pg)
     cdp.send('WebAuthn.enable')
     auth = cdp.send('WebAuthn.addVirtualAuthenticator', {'options': {'protocol': 'ctap2', 'transport': 'internal', 'hasResidentKey': True, 'hasUserVerification': True, 'isUserVerified': True, 'automaticPresenceSimulation': True}})
-    pg.goto(URL); pg.wait_for_timeout(2500)
+    pg.goto(URL + "?consola=1"); pg.wait_for_timeout(2500)
     check('pill horario', pg.locator('#stHours').inner_text().strip() == 'Abierto 24 h', pg.locator('#stHours').inner_text())
     pg.screenshot(path=SHOTS + '/01-inicio.png')
     # doble toque en zona libre (pantalla de la puerta)
@@ -123,7 +123,7 @@ with sync_playwright() as p:
     # móvil
     m = b.new_context(viewport={'width': 390, 'height': 844}, is_mobile=True, has_touch=True)
     mp = m.new_page(); mp.on('pageerror', lambda e: errs.append('M ' + str(e)))
-    mp.goto(URL); mp.wait_for_timeout(2000)
+    mp.goto(URL + "?consola=1"); mp.wait_for_timeout(2000)
     mp.screenshot(path=SHOTS + '/10-movil.png', full_page=True)
     mp.locator('.ticker').scroll_into_view_if_needed(); mp.wait_for_timeout(300)
     bx = mp.locator('.ticker').bounding_box()

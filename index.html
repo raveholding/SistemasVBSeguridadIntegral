@@ -311,6 +311,84 @@ html{touch-action:manipulation}
   .mbody{min-height:60vh}
   .ticker{font-size:11px}
 }
+
+/* ── FRENTE DEL PORTERO (pantalla de inicio táctil) ── */
+#front{position:fixed;inset:0;z-index:45;display:none;flex-direction:column;gap:14px;background:var(--bg);padding:max(14px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));overflow:hidden;color:var(--silver)}
+#front.on{display:flex}
+#front::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(900px 500px at 12% -10%,rgba(255,255,255,.07),transparent 60%),radial-gradient(700px 500px at 100% 110%,rgba(224,224,224,.05),transparent 60%)}
+#front>*{position:relative}
+#front .i{width:1.25em;height:1.25em}
+.fr-bar{display:flex;align-items:center;gap:14px;min-height:64px}
+.fr-brand{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+.fr-logo{width:52px;height:52px;border-radius:16px;background:#000;border:1px solid var(--b1);display:grid;place-items:center;overflow:hidden;flex:none}
+.fr-logo img{width:100%;height:100%;object-fit:contain;pointer-events:none}
+.fr-brand>div:last-child{min-width:0}
+.fr-brand b{display:block;font-size:19px;letter-spacing:-.02em;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fr-brand small{display:block;color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fr-ibtn{width:48px;height:48px;border-radius:14px;border:1px solid var(--b1);display:grid;place-items:center;background:var(--p2);color:var(--silver);cursor:pointer}
+.fr-ibtn:active{transform:scale(.94);background:var(--p3)}
+.fr-clock{text-align:right;line-height:1.15}
+.fr-clock b{display:block;font-size:26px;font-variant-numeric:tabular-nums;letter-spacing:-.02em;color:var(--white);font-weight:700}
+.fr-clock small{display:flex;align-items:center;gap:6px;justify-content:flex-end;color:var(--muted);font-size:13px}
+.fr-dot{width:9px;height:9px;border-radius:50%;background:var(--muted);display:inline-block}
+.fr-dot.on{background:var(--white);box-shadow:0 0 0 4px rgba(255,255,255,.14)}
+.fr-dot.off{background:transparent;border:2px solid var(--silver)}
+.fr-main{flex:1;min-height:0;display:flex;gap:16px}
+.fr-hero{flex:1.05;min-width:0;background:linear-gradient(160deg,#101010,#070707);border:1px solid var(--b1);border-radius:28px;padding:28px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.fr-hero::after{content:"";position:absolute;right:-90px;top:-90px;width:320px;height:320px;border:2px solid rgba(255,255,255,.09);border-radius:60px;transform:rotate(18deg);pointer-events:none}
+.fr-big{width:96px;height:96px;border-radius:28px;background:#000;border:1px solid var(--b1);display:grid;place-items:center;overflow:hidden}
+.fr-big img{width:100%;height:100%;object-fit:contain}
+.fr-hero h1{font-size:clamp(30px,4.4vw,52px);line-height:1.02;margin:18px 0 10px;color:var(--white);letter-spacing:-.02em;font-weight:800}
+.fr-hero h1 em{font-style:normal;color:var(--silver)}
+.fr-hero p{color:var(--muted);margin:0;max-width:34ch;font-size:17px}
+.fr-badge{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:99px;border:1px solid rgba(224,224,224,.35);background:rgba(255,255,255,.06);color:var(--silver);font-weight:700;font-size:14px;width:fit-content}
+.fr-infos{display:grid;gap:10px;margin-top:20px}
+.fr-info{display:flex;gap:10px;align-items:center;color:var(--muted);font-size:14px}
+.fr-info b{color:var(--silver);font-weight:600}
+.fr-off{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;border:1px solid var(--silver);background:rgba(255,255,255,.06);color:var(--white);margin-bottom:12px}
+.fr-off b{display:block;font-size:16px}.fr-off small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.fr-tiles{flex:1.25;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:14px;min-width:0}
+.fr-tile{background:var(--p2);border:1px solid var(--b1);border-radius:22px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;text-align:left;min-height:96px;position:relative;overflow:hidden;cursor:pointer;color:var(--silver);transition:transform .12s,background .12s,border-color .12s}
+.fr-tile:active{transform:scale(.97);background:var(--p3)}
+#front .fr-tile .i{width:34px;height:34px;color:var(--white)}
+.fr-tile b{font-size:19px;letter-spacing:-.01em;display:block;color:var(--white)}
+.fr-tile small{color:var(--muted);font-size:13px;display:block;margin-top:2px}
+.fr-tile.main{grid-column:1/-1;background:linear-gradient(135deg,#fff,#d4d4d4);border-color:#fff;color:#000;flex-direction:row;align-items:center;gap:16px}
+#front .fr-tile.main .i{color:#000;width:48px;height:48px}
+.fr-tile.main b{font-size:26px;color:#000}
+.fr-tile.main small{color:rgba(0,0,0,.65)}
+.fr-tile.main,.fr-tile.sos,.fr-tile.wide{justify-content:flex-start}
+.fr-tile.wide{grid-column:1/-1;flex-direction:row;align-items:center;gap:14px;min-height:76px}
+.fr-tile.sos{border:2px solid var(--white);background:linear-gradient(160deg,rgba(255,255,255,.10),#000);flex-direction:row;align-items:center;gap:14px;min-height:84px}
+.fr-tile.sos.half,.fr-tile.fam{grid-column:auto}
+.fr-tile.sos:not(.half){grid-column:1/-1}
+.fr-tile.blocked,.fr-tile[disabled]{opacity:.42}
+.fr-tile[disabled]{pointer-events:none}
+.fr-ft{display:flex;gap:14px;align-items:center;justify-content:space-between;color:var(--muted);font-size:12.5px;flex-wrap:wrap}
+.fr-svb{display:flex;align-items:center;gap:14px;flex-basis:100%;background:linear-gradient(90deg,#0a0a0a,#121212);border:1px solid var(--b1);border-radius:16px;padding:10px 14px;color:var(--silver)}
+.fr-svb .mk{width:48px;height:44px;border-radius:12px;background:#000;border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;letter-spacing:.04em;color:#fff;flex:none}
+.fr-svb .tx{flex:1;min-width:0;line-height:1.25}
+.fr-svb .tx b{display:block;font-size:14px;color:var(--white)}
+.fr-svb .tx span{color:var(--muted);font-size:12px}
+.fr-svb .ct{display:flex;gap:8px;flex-wrap:wrap}
+.fr-svb .ct a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--b1);background:var(--p3);color:var(--silver);text-decoration:none;font-weight:600;font-size:13px}
+.fr-svb .ct a.wa{background:var(--silver);border-color:var(--silver);color:#000}
+.fr-dp{width:min(420px,94vw)}
+.fr-dp h3{margin:0 0 4px;font-size:22px;color:var(--white)}
+.fr-dp p{margin:0 0 12px;color:var(--muted);font-size:14px}
+.fr-dp .keys{margin-bottom:10px}
+.fr-dp .key{height:clamp(58px,9vh,74px)}
+@media (max-width:860px){
+  #front{overflow:auto}
+  .fr-main{flex-direction:column;overflow:visible;flex:none}
+  .fr-hero{flex:none;padding:20px}.fr-big{width:70px;height:70px}.fr-hero h1{font-size:30px}.fr-infos{display:none}
+  .fr-tiles{flex:none;grid-auto-rows:minmax(110px,auto)}
+  .fr-clock b{font-size:20px}.fr-brand small{display:none}
+  .fr-tile.main b{font-size:22px}
+  .fr-svb{flex-wrap:wrap}.fr-svb .ct{width:100%}
+}
+@media (max-height:640px) and (min-width:861px){.fr-hero{padding:18px}.fr-hero h1{font-size:30px}}
+@media (prefers-reduced-motion:reduce){#front *{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -345,6 +423,12 @@ html{touch-action:manipulation}
   <symbol id="ic-full" viewBox="0 0 24 24"><path d="M3 9V3h6M21 9V3h-6M3 15v6h6M21 15v6h-6"/></symbol>
   <symbol id="ic-talk" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
   <symbol id="ic-wa" viewBox="0 0 24 24"><path d="M3 21l1.7-5A9 9 0 1 1 8 19.3z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 1c-1-.5-2-1.5-2.5-2.5l1-1-1-2z"/></symbol>
+  <symbol id="ic-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 20 3M16 7l3 3M13.5 9.5l2.5 2.5"/></symbol>
+  <symbol id="ic-ticket" viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 0 0 8v2a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-2a2 2 0 0 1 0-8V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1z"/><path d="M14 5v14" stroke-dasharray="2 3"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="ic-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 11 12 3l9 8M5 10v10h14V10M10 20v-6h4v6"/></symbol>
+  <symbol id="ic-alert" viewBox="0 0 24 24"><path d="M12 3 2 20h20z"/><path d="M12 10v5M12 18h.01"/></symbol>
 </svg>
 
 <div class="app" id="app">
@@ -362,6 +446,7 @@ html{touch-action:manipulation}
       <span class="pill" id="stOcc" hidden title="Aforo: personas dentro"><i></i><span>0</span></span>
     </div>
     <div class="clock" id="clock">--:--</div>
+    <button class="ibtn" id="btnHome" aria-label="Inicio del portero" title="Inicio del portero"><svg class="i"><use href="#ic-home"/></svg></button>
     <button class="ibtn" id="btnMic" aria-label="Asistente de voz"><svg class="i"><use href="#ic-mic"/></svg></button>
     <button class="ibtn" id="btnAdmin" aria-label="Administración"><svg class="i"><use href="#ic-gear"/></svg></button>
   </header>
@@ -448,6 +533,37 @@ html{touch-action:manipulation}
   </main>
 
   <footer class="ticker" id="ticker"><span>Sistema iniciado</span></footer>
+</div>
+
+<!-- FRENTE DEL PORTERO (pantalla de inicio) -->
+<section id="front" aria-label="Portero digital">
+  <header class="fr-bar">
+    <div class="fr-brand"><div class="fr-logo"><img id="frLogo" alt=""></div><div><b id="frName"></b><small id="frSub"></small></div></div>
+    <button class="fr-ibtn" data-fr="console" aria-label="Cámaras y consola" title="Cámaras y consola"><svg class="i"><use href="#ic-grid"/></svg></button>
+    <button class="fr-ibtn" data-fr="fs" aria-label="Pantalla completa" title="Pantalla completa"><svg class="i"><use href="#ic-full"/></svg></button>
+    <div class="fr-clock"><b id="frClk">--:--</b><small><span class="fr-dot" id="frDot"></span><span id="frSt"></span></small></div>
+  </header>
+  <main class="fr-main" id="frMain"></main>
+  <footer class="fr-ft">
+    <div class="fr-svb"><div class="mk">SVB</div>
+      <div class="tx"><b>Desarrollado por Vincular Business · Sistema VB</b><span>Software de gestión, digitalización y seguridad para comercios y organizaciones · Argentina</span></div>
+      <div class="ct"><a class="wa" id="frWa" href="https://wa.me/5493874484132" target="_blank" rel="noopener"><svg class="i"><use href="#ic-phone"/></svg> WhatsApp (387) 4484132</a><a href="mailto:vincularbusiness@gmail.com">vincularbusiness@gmail.com</a></div></div>
+  </footer>
+</section>
+
+<!-- PIN desde el frente -->
+<div class="ov-full center" id="dpOv">
+  <div class="modal fr-dp">
+    <h3>Ingresar con PIN</h3>
+    <p>Socios y equipo · también podés usar el teclado de la PC</p>
+    <div class="display" id="dpDisplay"><span>Ingrese PIN</span></div>
+    <div class="keys" id="dpKeys"></div>
+    <div class="bio-acts" id="dpBio" hidden>
+      <button class="btn" id="dpPk" hidden><svg class="i"><use href="#ic-finger"/></svg>Huella</button>
+      <button class="btn" id="dpFace" hidden><svg class="i"><use href="#ic-face"/></svg>Rostro</button>
+    </div>
+    <button class="btn" id="dpClose" style="width:100%;margin-top:10px">Cerrar</button>
+  </div>
 </div>
 
 <!-- SOS -->
@@ -575,6 +691,10 @@ html{touch-action:manipulation}
       <div class="row">
         <label class="f">Nombre del negocio<input class="inp" id="sBiz"></label>
         <label class="f">Perfil<select class="inp" id="sMode"><option value="corp">Corporativo / Alta seguridad</option><option value="home">Residencial / Doméstico</option></select></label>
+      </div>
+      <div class="row">
+        <label class="f">Frase de la pantalla de inicio<input class="inp" id="sTagline" maxlength="60" placeholder="Ej.: Control de accesos y seguridad"></label>
+        <label class="f">Dirección (se muestra en el inicio)<input class="inp" id="sAddr" maxlength="80" placeholder="Ej.: Av. Belgrano 123, Salta"></label>
       </div>
       <div class="row">
         <label class="f">Logo (se guarda en este equipo)<input class="inp" type="file" id="sLogo" accept="image/*"></label>
@@ -1203,7 +1323,7 @@ const LS = {
 };
 /* ═══════════════════════════ AJUSTES ═══════════════════════════ */
 const DEFAULTS = {
-  biz: 'Mi Negocio', mode: 'corp', logo: '',
+  biz: 'Mi Negocio', mode: 'corp', logo: '', tagline: '', addr: '',
   emergency: '911', familyName: 'Familiar', familyPhone: '', familyWa: true, officePhone: '', ringCall: false,
   voiceOn: false, wakeOn: false, wake: 'sistema', lang: 'es-AR', voice: '', sens: 0.4, rate: 1,
   chime: 0, vol: 0.7,
@@ -1296,6 +1416,7 @@ function setPill(id, state, title) {
 }
 function paintStatus() {
   const st = net.status;
+  setTimeout(paintFront, 0);
   setPill('#stServer', net.online ? 'on' : '', net.online ? 'Servidor conectado' : 'Modo autónomo');
   const cams = st && st.cameras;
   const camOk = cams && cams.configured && cams.go2rtc.running;
@@ -1359,8 +1480,10 @@ function applyBrand() {
   document.title = `Sistemas VB Seguridad Integral · ${S.biz}`;
   const wa = `https://wa.me/5493874484132?text=${encodeURIComponent(`Hola Vincular Business, consulto por Sistemas VB Seguridad Integral de ${S.biz}`)}`;
   $('#devWa').href = wa; $('#devLine').href = wa;
+  paintFront();
 }
 function setView(v) {
+  if (typeof FRONT !== 'undefined' && FRONT.on && v && FRONT.html) showFront(false); // "ver cámaras" por voz, etc.
   $$('.tab[data-view]').forEach((b) => b.classList.toggle('active', b.dataset.view === v));
   $$('.view').forEach((el) => el.classList.toggle('active', el.id === 'view-' + v));
   document.querySelector('main').classList.toggle('wide', v === 'cctv');
@@ -1380,10 +1503,12 @@ function renderDots(el, len, placeholder) {
 let pin = '';
 let localFails = 0, lockedUntil = 0;
 function onDoorKey(k) {
+  if (FRONT.on && !dpOpen() && /^\d$/.test(k)) openDp(); // tecleando en la PC se abre la ventana de PIN
+  if (dpOpen()) armDp();
   if (k === 'C') pin = '';
   else if (k === 'OK') { const p = pin; pin = ''; submitPin(p, 'teclado'); }
   else if (pin.length < 8) pin += k;
-  renderDots($('#pinDisplay'), pin.length, 'Ingrese PIN');
+  paintPin();
 }
 const scanKb = { b: '', t: 0 }; // lector de QR USB/Bluetooth: tipea "SVB1|123456|…" + Enter muy rápido
 // Teclado físico (PC, teclado USB/Bluetooth) en la ventana de PIN: administración, abrir puerta, escenas
@@ -1401,7 +1526,7 @@ addEventListener('keydown', (e) => {
   if (e.key.length === 1) { if (now - scanKb.t > 80) scanKb.b = ''; scanKb.t = now; scanKb.b += e.key; }
   if (e.key === 'Enter') {
     const m = scanKb.b.match(/SVB1\W?(\d{6})/i); if (scanKb.b.length >= 8) { window.SVB_QR_READER = true; try { LS.setItem('svb.qrReader', '1'); } catch { /* sin almacenamiento */ } } scanKb.b = '';
-    if (m) { e.preventDefault(); pin = ''; renderDots($('#pinDisplay'), 0, 'Ingrese PIN'); if (!accOpen()) return closedFlash(); return submitPin(m[1], 'lector QR'); }
+    if (m) { e.preventDefault(); pin = ''; paintPin(); if (!accOpen()) return closedFlash(); return submitPin(m[1], 'lector QR'); }
   }
   const nd = /^\d$/.test(e.key) ? e.key : ((e.code || '').match(/^Numpad(\d)$/) || [])[1];
   if (nd) onDoorKey(nd);
@@ -1413,6 +1538,7 @@ function localVisitors() { try { return JSON.parse(LS.getItem('svb.visitors') ||
 
 async function submitPin(p, source) {
   if (!p) return;
+  closeDp();
   if (Date.now() < lockedUntil) { flash(null, 'TECLADO BLOQUEADO', `Reintente en ${Math.ceil((lockedUntil - Date.now()) / 1000)} s`); return; }
   if (net.online) {
     try { return doorResult(await api('/api/door/open', { method: 'POST', body: { pin: p, source, ms: S.relayMs } }), source); } catch { net.online = false; }
@@ -2763,7 +2889,7 @@ function showPane(id) {
   if (id === 'equipos') loadEquipos();
   if (id === 'soporte') $('#devInfoTxt').textContent = `Cliente: ${S.biz}. Panel ${isElectron ? 'de escritorio' : 'web'} en ${location.origin}. Servidor ${net.online ? 'conectado' : 'no disponible'}. Personas cargadas: ${ACC.people || 0}. Horario: ${ACC.text}.`;
 }
-const BIND = { sBiz: 'biz', sMode: 'mode', sEmergency: 'emergency', sFamilyName: 'familyName', sFamilyPhone: 'familyPhone', sFamilyWa: 'familyWa', sOfficePhone: 'officePhone', sRingCall: 'ringCall',
+const BIND = { sBiz: 'biz', sMode: 'mode', sTagline: 'tagline', sAddr: 'addr', sEmergency: 'emergency', sFamilyName: 'familyName', sFamilyPhone: 'familyPhone', sFamilyWa: 'familyWa', sOfficePhone: 'officePhone', sRingCall: 'ringCall',
   sVoiceOn: 'voiceOn', sWakeOn: 'wakeOn', sWake: 'wake', sLang: 'lang', sVoice: 'voice', sSens: 'sens', sRate: 'rate', sVol: 'vol', sRelay: 'relayMs', sRelayMode: 'relayMode',
   sDoorPin: 'doorPin', sDuressPin: 'duressPin', sAdminPin: 'adminPin', sServer: 'server', sDoorSrc: 'doorSrc', sGridQ: 'gridQ', sLowLat: 'lowLatency', sMot: 'motion', sLoit: 'loiter', sFace: 'face', sAiNotify: 'aiNotify' };
 function labels() {
@@ -2784,7 +2910,7 @@ function bindForm() {
       if (el.type === 'range' || el.type === 'number') v = parseFloat(v);
       if (['doorPin', 'duressPin', 'adminPin'].includes(k)) { v = String(v).replace(/\D/g, ''); el.value = v; if (v.length < 4) return; }
       S[k] = v; save(); labels();
-      if (k === 'mode' || k === 'biz' || k === 'familyName') applyBrand();
+      if (k === 'mode' || k === 'biz' || k === 'familyName' || k === 'tagline' || k === 'addr') applyBrand();
       if (k === 'lang' && rec) rec.lang = v;
       if (k === 'doorSrc') attachDoorChannel();
       if (k === 'gridQ' || k === 'server' || k === 'lowLatency') { if (k === 'server') { rtcLoaded = null; refreshStatus(); } buildGrid(); }
@@ -2873,6 +2999,7 @@ function paintAccess() {
   $('#btnPk').hidden = !(net.online && ACC.pk);
   $('#btnFace').hidden = !(net.online && ACC.face);
   $('#bioActs').hidden = $('#btnPk').hidden && $('#btnFace').hidden;
+  paintFront();
 }
 setInterval(paintAccess, 30000);
 function closedFlash() {
@@ -3490,7 +3617,7 @@ function applyProfile() {
   if (p === PLAT_PROFILE && document.body.classList.contains('prof-' + p)) return;
   Object.keys(PROFILE_TXT).forEach((k) => document.body.classList.toggle('prof-' + k, k === p));
   PLAT_PROFILE = p;
-  if (p === 'monitor') setView('cctv');
+  if (p === 'monitor') { setView('cctv'); showFront(false); }
   const sel = $('#sProf'); if (sel) sel.value = S.devProfile || 'auto';
 }
 let profT = null; addEventListener('resize', () => { clearTimeout(profT); profT = setTimeout(applyProfile, 300); });
@@ -3582,9 +3709,108 @@ function toggleKiosk() {
   else document.exitFullscreen();
 }
 
+/* ═══════════════════════════ FRENTE DEL PORTERO ═══════════════════════════
+   Pantalla de inicio táctil: timbre, PIN, pase, NFC, voz y emergencia. La consola (cámaras, teclado
+   lateral, eventos) queda un toque más allá, con el botón de cuadrícula. */
+var FRONT = { on: false, html: '' };
+const frIc = (n) => `<svg class="i"><use href="#ic-${n}"/></svg>`;
+function frTitle() {
+  const w = String(S.biz || '').trim().split(/\s+/).filter(Boolean);
+  return w.length > 1 ? `${esc(w.slice(0, -1).join(' '))} <em>${esc(w[w.length - 1])}</em>` : `<em>${esc(S.biz || 'Portero')}</em>`;
+}
+function paintFront() {
+  if (!$('#front')) return;
+  const open = accOpen();
+  const cams = net.status && net.status.cameras;
+  const camOn = !!((cams && cams.configured) || (S.doorSrc === 'local' && typeof localStream !== 'undefined' && localStream));
+  const bio = net.online && (ACC.face || ACC.pk);
+  const nfcOK = 'NDEFReader' in window;
+  const corp = S.mode === 'corp';
+  const tag = S.tagline || (corp ? 'Control de accesos y seguridad' : 'Tu hogar, protegido');
+  const dis = open ? '' : 'blocked';
+  $('#frLogo').src = S.logo || 'assets/logo.svg';
+  $('#frName').textContent = S.biz;
+  $('#frSub').textContent = ($('#modeLabel') && $('#modeLabel').textContent) || '';
+  $('#frDot').className = 'fr-dot ' + (open ? 'on' : 'off');
+  $('#frSt').textContent = open ? 'Habilitado' : 'Fuera de horario';
+  $('#frWa').href = `https://wa.me/5493874484132?text=${encodeURIComponent(`Hola Vincular Business, consulto por Sistemas VB Seguridad Integral de ${S.biz}`)}`;
+  const fam = !!(S.familyPhone);
+  const html = `
+   <div class="fr-hero">
+     <div><div class="fr-big"><img alt="" src="${esc(S.logo || 'assets/logo.svg')}"></div>
+       <h1>${frTitle()}</h1><p>${esc(tag)}</p></div>
+     <div>
+       ${open ? '' : `<div class="fr-off">${frIc('clock')}<span><b>Fuera de horario de atención</b><small>Horario: ${esc(ACC.text)}. La emergencia siempre está disponible.</small></span></div>`}
+       <div class="fr-badge">${frIc('shield')} ${camOn ? 'Videovigilancia activa · tu seguridad primero' : 'Sin cámaras · tu privacidad primero'}</div>
+       <div class="fr-infos">
+         <div class="fr-info">${frIc('clock')}<span><b>${esc(ACC.text)}</b></span></div>
+         ${S.addr ? `<div class="fr-info">${frIc('pin')}<span><b>${esc(S.addr)}</b></span></div>` : ''}
+       </div>
+     </div>
+   </div>
+   <div class="fr-tiles">
+     <button class="fr-tile main ${dis}" data-fr="bell">${frIc('bell')}<span><b>${corp ? 'Llamar a oficina' : 'Tocar timbre'}</b><small>Avisá que llegaste</small></span></button>
+     <button class="fr-tile" data-fr="pin">${frIc('key')}<span><b>Ingresar con PIN</b><small>Socios y equipo</small></span></button>
+     <button class="fr-tile ${dis}" data-fr="pass">${frIc('ticket')}<span><b>Tengo un pase</b><small>Código de visita</small></span></button>
+     <button class="fr-tile ${dis}" data-fr="nfc">${frIc('nfc')}<span><b>Tarjeta NFC</b><small>${nfcOK ? 'Acercá tu tarjeta' : 'Según dispositivo'}</small></span></button>
+     <button class="fr-tile" data-fr="voice" ${SR ? '' : 'disabled'}>${frIc('mic')}<span><b>Asistente de voz</b><small>“Abrir puerta”, “Horarios”…</small></span></button>
+     ${bio ? `<button class="fr-tile wide" data-fr="bio">${frIc(ACC.face ? 'face' : 'finger')}<span><b>Personal autorizado</b><small>${ACC.face && ACC.pk ? 'Rostro o huella, previamente registrados' : ACC.face ? 'Rostro, previamente registrado' : 'Huella, previamente registrada'}</small></span></button>` : ''}
+     <button class="fr-tile sos ${fam ? 'half' : ''}" data-fr="sos">${frIc('alert')}<span><b>Emergencia</b><small>Llamar al ${esc(S.emergency || '911')}${fam ? '' : ' o a un contacto de confianza'}</small></span></button>
+     ${fam ? `<button class="fr-tile sos half fam" data-fr="family">${frIc('phone')}<span><b>Llamar ${esc(S.familyName || 'familiar')}</b><small>Contacto de confianza</small></span></button>` : ''}
+   </div>`;
+  if (html !== FRONT.html) { FRONT.html = html; $('#frMain').innerHTML = html; }
+  const bi = $('#dpBio'); if (bi) { $('#dpPk').hidden = !(net.online && ACC.pk); $('#dpFace').hidden = !(net.online && ACC.face); bi.hidden = $('#dpPk').hidden && $('#dpFace').hidden; }
+}
+function showFront(on) {
+  FRONT.on = !!on;
+  $('#front').classList.toggle('on', FRONT.on);
+  document.body.classList.toggle('front-on', FRONT.on);
+  if (FRONT.on) { closeDp(); paintFront(); }
+}
+const dpOpen = () => $('#dpOv').classList.contains('show');
+let dpT = null;
+function paintPin() {
+  renderDots($('#pinDisplay'), pin.length, 'Ingrese PIN');
+  const d = $('#dpDisplay'); if (d) renderDots(d, pin.length, 'Ingrese PIN');
+}
+function openDp() {
+  $('#dpOv').classList.add('show'); paintPin(); paintFront(); armDp();
+}
+function closeDp() {
+  clearTimeout(dpT);
+  const ov = $('#dpOv'); if (!ov || !ov.classList.contains('show')) return;
+  ov.classList.remove('show'); pin = ''; paintPin();
+}
+/** Cierra sola la ventana de PIN si nadie la usa: no queda un PIN a medio escribir en una pantalla pública. */
+function armDp() { clearTimeout(dpT); dpT = setTimeout(closeDp, 25000); }
+const FR_ACT = {
+  bell: () => ring(), pin: () => openDp(), pass: () => openScanner(), nfc: () => readNfc(), voice: () => toggleVoice(),
+  sos: () => startSos('botón'), family: () => callFamily(),
+  bio: () => (net.online && ACC.face ? faceRecognize() : staffPk()),
+  console: () => { showFront(false); setView('door'); }, fs: () => toggleKiosk(),
+};
+function wireFront() {
+  $('#front').addEventListener('click', (e) => { const b = e.target.closest('[data-fr]'); if (b && !b.disabled && FR_ACT[b.dataset.fr]) { lastInteraction = Date.now(); FR_ACT[b.dataset.fr](); } });
+  buildKeypad($('#dpKeys'), (k) => { armDp(); onDoorKey(k); });
+  $('#dpClose').addEventListener('click', closeDp);
+  $('#dpPk').addEventListener('click', () => { closeDp(); staffPk(); });
+  $('#dpFace').addEventListener('click', () => { closeDp(); faceRecognize(); });
+  $('#btnHome').addEventListener('click', () => showFront(true));
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && dpOpen()) closeDp(); });
+  const tick = () => { const c = $('#frClk'); if (c) c.textContent = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false }); };
+  tick(); setInterval(tick, 5000);
+  // En la tablet de pared el frente vuelve solo si nadie toca la consola por 2 minutos
+  setInterval(() => {
+    if (FRONT.on || PLAT_PROFILE !== 'pared' || Date.now() - lastInteraction < 120000) return;
+    if (document.querySelector('.ov-full.show')) return;
+    showFront(true);
+  }, 15000);
+}
+
 /* ═══════════════════════════ ARRANQUE ═══════════════════════════ */
 function wire() {
   buildKeypad($('#keypad'), onDoorKey);
+  wireFront();
   buildKeypad($('#adminKeys'), onAdminKey);
   renderDots($('#pinDisplay'), 0, 'Ingrese PIN');
   $$('.tab[data-view]').forEach((b) => b.addEventListener('click', () => setView(b.dataset.view)));
@@ -3727,7 +3953,7 @@ function wire() {
 }
 
 async function boot() {
-  wire(); applyProfile(); applyBrand(); platformInfo(); initVoice(); paintAccess();
+  wire(); applyProfile(); if (PLAT_PROFILE !== 'monitor' && !/[?&]consola\b/.test(location.search)) showFront(true); applyBrand(); platformInfo(); initVoice(); paintAccess();
   logEvent('SYSTEM_BOOT', 'INFO', `Panel iniciado (${isElectron ? 'escritorio' : 'web'})`, { sync: false });
   await refreshStatus();
   setInterval(refreshStatus, 15000);
@@ -3737,7 +3963,7 @@ async function boot() {
   document.addEventListener('click', () => ac(), { once: true });
 }
 boot();
-window.SVB = { EQ, openWizard, applyProfile, detectProfile, peripherals, PLAT, runSceneUi, loadIntegra, S, net, submitPin, startSos, cancelSos, handleVoice, captureEvidence, Vault, qrEncode, AI, ACC, accOpen, setAccess, audit: () => audit };
+window.SVB = { showFront, paintFront, FRONT, EQ, openWizard, applyProfile, detectProfile, peripherals, PLAT, runSceneUi, loadIntegra, S, net, submitPin, startSos, cancelSos, handleVoice, captureEvidence, Vault, qrEncode, AI, ACC, accOpen, setAccess, audit: () => audit };
 </script>
 </body>
 </html>

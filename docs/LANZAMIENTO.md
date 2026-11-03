@@ -1,6 +1,6 @@
 # Sistemas VB Seguridad Integral — Lista para salir al mercado
 
-Estado al 3/11/2026 · versión 2.2.0
+Estado al 3/11/2026 · versión 2.3.0
 
 ## Listo en esta versión
 

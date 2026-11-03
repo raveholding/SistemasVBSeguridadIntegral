@@ -140,7 +140,7 @@ def main():
             page.on("response", lambda r: r.status >= 400 and errors.append(f"HTTP {r.status} {r.url}"))
 
             print("\n[1] Arranque")
-            page.goto(url)
+            page.goto(url + "?consola=1")
             page.wait_for_function("window.SVB && SVB.net.online", timeout=15000)
             check("Panel carga y se conecta al servidor", True)
             page.wait_for_function("document.querySelector('#stCams').classList.contains('on')", timeout=15000)
@@ -200,7 +200,7 @@ def main():
             check("Alerta SOS con foto a Telegram", any(path.endswith("sendPhoto") and "SOS" in body for path, body in calls["tg"]))
 
             print("[6] Monitor de cámaras (estilo DMSS)")
-            page.goto(url)
+            page.goto(url + "?consola=1")
             page.wait_for_function("window.SVB && SVB.net.online", timeout=15000)
             page.click(".tab[data-view='cctv']")
             check("Teclado oculto en vista cámaras (pantalla ancha)", not page.is_visible("#keypad"))
@@ -397,7 +397,7 @@ def main():
             page.fill("#sFamilyPhone", "+5493879999999")
             page.wait_for_timeout(1800)
             otro = b.new_context(viewport={"width": 1280, "height": 760}); op2 = otro.new_page()
-            op2.goto(url); op2.wait_for_function("window.SVB && SVB.net.online", timeout=10000)
+            op2.goto(url + "?consola=1"); op2.wait_for_function("window.SVB && SVB.net.online", timeout=10000)
             op2.wait_for_function("SVB.S.familyPhone === '+5493879999999'", timeout=8000)
             check("Ajustes compartidos llegan a otro equipo", True)
             check("Los PINs de respaldo NO se comparten", op2.evaluate("SVB.S.doorPin") == "2580")
@@ -486,7 +486,7 @@ def main():
 
             print("[12] Celular (vertical)")
             m = b.new_context(viewport={"width": 390, "height": 844}, is_mobile=True, has_touch=True, permissions=["camera"])
-            mp = m.new_page(); mp.goto(url); mp.wait_for_timeout(2500)
+            mp = m.new_page(); mp.goto(url + "?consola=1"); mp.wait_for_timeout(2500)
             mp.screenshot(path=os.path.join(SHOTS, "05-celular.png"), full_page=True)
             check("Vista celular renderiza", mp.is_visible("#keypad"))
             m.close()
@@ -494,7 +494,7 @@ def main():
             print("[13] Modo autónomo (sin servidor, file://)")
             o = b.new_context(viewport={"width": 1280, "height": 760}, permissions=["camera"])
             op = o.new_page(); op.on("pageerror", lambda e: errors.append("offline: " + str(e)))
-            op.goto("file://" + os.path.join(ROOT, "index.html"))
+            op.goto("file://" + os.path.join(ROOT, "index.html?consola=1"))
             op.wait_for_function("window.SVB", timeout=5000)
             check("Abre sin servidor", not op.evaluate("SVB.net.online"))
             for d in "2580":
