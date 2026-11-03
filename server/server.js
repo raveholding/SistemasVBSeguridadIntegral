@@ -1236,7 +1236,7 @@ function createApp(cfg, opts = {}) {
       if (!adminOnly()) return;
       if (m === 'POST') { const b = await readBody(req); devices.wizard = { done: !!b.done, at: new Date().toISOString() }; devices.save(); if (b.done) addEvent({ type: 'SETUP_DONE', level: 'HIGH', message: 'Asistente de instalación completado' }); }
       return send(res, 200, {
-        done: !!devices.wizard.done, at: devices.wizard.at || null,
+        done: !!devices.wizard.done || !cfg.wizardAuto, at: devices.wizard.at || null,
         checks: {
           negocio: cfg.businessName !== 'Mi Negocio', pins: cfg.doorPin !== '2580' && cfg.duressPin !== '9999' && cfg.adminPin !== '1234',
           camaras: camerasConfigured(), cerradura: !!cfg.esp32Url, panelAuth: !!(cfg.panelUser && cfg.panelPass), avisos: !!((cfg.telegram.token && cfg.telegram.chatId) || cfg.whatsapp.to || (cfg.push.enabled && cfg.push.topic)),

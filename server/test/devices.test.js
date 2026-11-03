@@ -112,3 +112,13 @@ test('Agregar equipos de cualquier marca: ONVIF, plantilla y RTSP; grilla, go2rt
   r = await call(port, 'POST', '/api/v1/wizard', { done: true });
   assert.strictEqual(r.body.done, true);
 });
+
+test('Instalaciones existentes: WIZARD_AUTO=0 evita que el asistente se abra solo', async (t) => {
+  const dir = tmp();
+  const app = createApp(readConfig({ PORT: '0', HOST: '127.0.0.1', GO2RTC_DISABLED: '1', DATA_DIR: dir, DOORBELL: '0', TELEGRAM_POLL: '0', PUSH_ENABLED: '0', WIZARD_AUTO: '0' }), { log: () => {}, envFile: path.join(dir, '.env') });
+  await app.start();
+  t.after(() => app.stop());
+  const r = await call(app.server.address().port, 'GET', '/api/v1/wizard');
+  assert.strictEqual(r.body.done, true, 'no se abre solo');
+  assert.strictEqual(readConfig({}).wizardAuto, true, 'por defecto sí se abre');
+});
